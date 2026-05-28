@@ -20,8 +20,15 @@ define( 'EQUIPMENT_MANAGEMENT_DIR', plugin_dir_path( __FILE__ ) );
 define( 'EQUIPMENT_MANAGEMENT_URL', plugin_dir_url( __FILE__ ) );
 
 require_once EQUIPMENT_MANAGEMENT_DIR . 'includes/helpers.php';
+require_once EQUIPMENT_MANAGEMENT_DIR . 'includes/class-db.php';
+require_once EQUIPMENT_MANAGEMENT_DIR . 'includes/class-roles.php';
+require_once EQUIPMENT_MANAGEMENT_DIR . 'includes/class-permissions.php';
 require_once EQUIPMENT_MANAGEMENT_DIR . 'includes/class-activator.php';
 require_once EQUIPMENT_MANAGEMENT_DIR . 'includes/class-deactivator.php';
+require_once EQUIPMENT_MANAGEMENT_DIR . 'admin/class-dashboard-page.php';
+require_once EQUIPMENT_MANAGEMENT_DIR . 'admin/class-equipment-page.php';
+require_once EQUIPMENT_MANAGEMENT_DIR . 'admin/class-master-page.php';
+require_once EQUIPMENT_MANAGEMENT_DIR . 'admin/class-admin-menu.php';
 require_once EQUIPMENT_MANAGEMENT_DIR . 'includes/class-plugin.php';
 
 register_activation_hook( __FILE__, array( 'Equipment_Management_Activator', 'activate' ) );

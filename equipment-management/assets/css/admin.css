@@ -1,3 +1,71 @@
 .equipment-management {
 	box-sizing: border-box;
 }
+
+.equipment-management *,
+.equipment-management *::before,
+.equipment-management *::after {
+	box-sizing: inherit;
+}
+
+.equipment-management-tabs {
+	margin-top: 16px;
+}
+
+.equipment-management-master-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+	gap: 24px;
+	margin-top: 20px;
+	align-items: start;
+}
+
+.equipment-management-master-list,
+.equipment-management-master-form {
+	min-width: 0;
+}
+
+.equipment-management-master-form {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	padding: 16px 20px;
+}
+
+.equipment-management-search {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	margin: 16px 0;
+	padding: 16px;
+}
+
+.equipment-management-search-grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(180px, 1fr));
+	gap: 12px 16px;
+	margin-bottom: 14px;
+}
+
+.equipment-management-search-grid label {
+	display: grid;
+	gap: 4px;
+}
+
+.equipment-management-search-grid input,
+.equipment-management-search-grid select {
+	width: 100%;
+	max-width: none;
+}
+
+.equipment-management-table {
+	margin-top: 12px;
+}
+
+@media (max-width: 960px) {
+	.equipment-management-master-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.equipment-management-search-grid {
+		grid-template-columns: 1fr;
+	}
+}
