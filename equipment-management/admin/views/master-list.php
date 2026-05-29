@@ -40,7 +40,7 @@ $definition = $master_definitions[ $current_type ];
 				<?php
 				printf(
 					/* translators: %s: master label. */
-					esc_html__( '%s 一覧', 'equipment-management' ),
+					esc_html__( '%s一覧', 'equipment-management' ),
 					esc_html( $definition['label'] )
 				);
 				?>

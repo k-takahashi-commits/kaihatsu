@@ -23,6 +23,9 @@ class Equipment_Management_Plugin {
 		add_action( 'admin_menu', array( $this, 'register_admin_menu' ) );
 		add_action( 'admin_post_equipment_management_save_master', array( 'Equipment_Management_Master_Page', 'handle_save' ) );
 		add_action( 'admin_post_equipment_management_save_equipment', array( 'Equipment_Management_Equipment_Page', 'handle_save' ) );
+		add_action( 'admin_post_equipment_management_export_equipment', array( 'Equipment_Management_Equipment_Page', 'handle_export' ) );
+		add_action( 'admin_post_equipment_management_save_repair', array( 'Equipment_Management_Repair_Page', 'handle_save' ) );
+		add_action( 'admin_post_equipment_management_export_repairs', array( 'Equipment_Management_Repair_Page', 'handle_export' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
 	}
 

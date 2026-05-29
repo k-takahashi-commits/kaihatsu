@@ -72,6 +72,44 @@ class Equipment_Management_Equipment_Page {
 	}
 
 	/**
+	 * Exports equipment list rows as CSV.
+	 *
+	 * @return void
+	 */
+	public static function handle_export() {
+		Equipment_Management_Permissions::require_capability( 'equipment_export_csv' );
+		check_admin_referer( 'equipment_management_export_equipment' );
+
+		$filters = self::get_filters();
+		$rows    = Equipment_Management_DB::get_equipment_rows( $filters, 0 );
+
+		Equipment_Management_DB::log_operation( 'export', 'equipment', null, null, array( 'filters' => $filters, 'count' => count( $rows ) ) );
+
+		self::send_csv(
+			'equipment-' . gmdate( 'Ymd-His' ) . '.csv',
+			array( '内部ID', '機器名', '設置場所', '型番', '機器コード', '導入日', '導入年数', '利用用途', '状態', '最終修理日', '更新日時' ),
+			array_map(
+				static function ( $row ) {
+					return array(
+						$row->id,
+						$row->name,
+						$row->location_name,
+						$row->model_number,
+						$row->equipment_code,
+						$row->installed_date,
+						Equipment_Management_DB::calculate_years_since( $row->installed_date ),
+						$row->usage_name,
+						$row->status_name,
+						$row->last_repair_date,
+						$row->updated_at,
+					);
+				},
+				$rows
+			)
+		);
+	}
+
+	/**
 	 * Renders the equipment registration form.
 	 *
 	 * @return void
@@ -85,6 +123,21 @@ class Equipment_Management_Equipment_Page {
 		$notice       = isset( $_GET['equipment_notice'] ) ? sanitize_key( wp_unslash( $_GET['equipment_notice'] ) ) : '';
 
 		include equipment_management_path( 'admin/views/equipment-form.php' );
+	}
+
+	/**
+	 * Renders the equipment detail page.
+	 *
+	 * @return void
+	 */
+	public static function render_detail() {
+		Equipment_Management_Permissions::require_capability( 'equipment_view_items' );
+
+		$equipment_id = isset( $_GET['equipment_id'] ) ? absint( $_GET['equipment_id'] ) : 0;
+		$equipment    = Equipment_Management_DB::get_equipment_detail_row( $equipment_id );
+		$repairs      = $equipment ? Equipment_Management_DB::get_repair_rows( array( 'equipment_id' => $equipment->id ), 0 ) : array();
+
+		include equipment_management_path( 'admin/views/equipment-detail.php' );
 	}
 
 	/**
@@ -139,5 +192,39 @@ class Equipment_Management_Equipment_Page {
 
 		wp_safe_redirect( add_query_arg( $args, admin_url( 'admin.php' ) ) );
 		exit;
+	}
+
+	/**
+	 * Sends CSV output encoded for Excel on Japanese Windows.
+	 *
+	 * @param string            $filename Download filename.
+	 * @param array<int,string> $headers Header row.
+	 * @param array<int,array>  $rows Data rows.
+	 * @return void
+	 */
+	private static function send_csv( $filename, $headers, $rows ) {
+		nocache_headers();
+		header( 'Content-Type: text/csv; charset=Shift_JIS' );
+		header( 'Content-Disposition: attachment; filename="' . sanitize_file_name( $filename ) . '"' );
+
+		$output = fopen( 'php://output', 'w' );
+		fputcsv( $output, array_map( array( __CLASS__, 'encode_csv_value' ), $headers ) );
+
+		foreach ( $rows as $row ) {
+			fputcsv( $output, array_map( array( __CLASS__, 'encode_csv_value' ), $row ) );
+		}
+
+		fclose( $output );
+		exit;
+	}
+
+	/**
+	 * Encodes one CSV value to CP932.
+	 *
+	 * @param mixed $value Value.
+	 * @return string
+	 */
+	private static function encode_csv_value( $value ) {
+		return mb_convert_encoding( (string) $value, 'CP932', 'UTF-8' );
 	}
 }

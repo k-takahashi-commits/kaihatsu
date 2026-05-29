@@ -20,7 +20,7 @@ $is_edit = ! empty( $equipment );
 	<?php endif; ?>
 
 	<?php if ( empty( $masters['locations'] ) || empty( $masters['statuses'] ) ) : ?>
-		<div class="notice notice-warning"><p><?php esc_html_e( '登録には、場所マスターと状態マスターが必要です。先にマスター管理で登録してください。', 'equipment-management' ); ?></p></div>
+		<div class="notice notice-warning"><p><?php esc_html_e( '登録には場所マスターと状態マスターが必要です。先にマスター管理で登録してください。', 'equipment-management' ); ?></p></div>
 	<?php endif; ?>
 
 	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="equipment-management-form">

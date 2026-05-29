@@ -8,12 +8,28 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+$export_url = wp_nonce_url(
+	add_query_arg(
+		array_merge(
+			$_GET,
+			array(
+				'action' => 'equipment_management_export_equipment',
+			)
+		),
+		admin_url( 'admin-post.php' )
+	),
+	'equipment_management_export_equipment'
+);
 ?>
 
 <div class="wrap equipment-management">
 	<h1 class="wp-heading-inline"><?php esc_html_e( '機材一覧', 'equipment-management' ); ?></h1>
 	<a href="<?php echo esc_url( add_query_arg( array( 'page' => Equipment_Management_Admin_Menu::SLUG_ITEM_NEW ), admin_url( 'admin.php' ) ) ); ?>" class="page-title-action">
 		<?php esc_html_e( '新規登録', 'equipment-management' ); ?>
+	</a>
+	<a href="<?php echo esc_url( $export_url ); ?>" class="page-title-action">
+		<?php esc_html_e( 'CSVエクスポート', 'equipment-management' ); ?>
 	</a>
 	<hr class="wp-header-end">
 
@@ -90,19 +106,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<th scope="col"><?php esc_html_e( '状態', 'equipment-management' ); ?></th>
 				<th scope="col"><?php esc_html_e( '最終修理日', 'equipment-management' ); ?></th>
 				<th scope="col"><?php esc_html_e( '更新日時', 'equipment-management' ); ?></th>
+				<th scope="col"><?php esc_html_e( '操作', 'equipment-management' ); ?></th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php if ( empty( $rows ) ) : ?>
 				<tr>
-					<td colspan="11"><?php esc_html_e( '機材データがありません。', 'equipment-management' ); ?></td>
+					<td colspan="12"><?php esc_html_e( '機材データがありません。', 'equipment-management' ); ?></td>
 				</tr>
 			<?php else : ?>
 				<?php foreach ( $rows as $row ) : ?>
 					<tr>
 						<td><?php echo esc_html( $row->id ); ?></td>
 						<td>
-							<a href="<?php echo esc_url( add_query_arg( array( 'page' => Equipment_Management_Admin_Menu::SLUG_ITEM_NEW, 'equipment_id' => $row->id ), admin_url( 'admin.php' ) ) ); ?>">
+							<a href="<?php echo esc_url( add_query_arg( array( 'page' => Equipment_Management_Admin_Menu::SLUG_ITEM_DETAIL, 'equipment_id' => $row->id ), admin_url( 'admin.php' ) ) ); ?>">
 								<?php echo esc_html( $row->name ); ?>
 							</a>
 						</td>
@@ -115,6 +132,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<td><?php echo esc_html( $row->status_name ); ?></td>
 						<td><?php echo esc_html( $row->last_repair_date ); ?></td>
 						<td><?php echo esc_html( $row->updated_at ); ?></td>
+						<td>
+							<a href="<?php echo esc_url( add_query_arg( array( 'page' => Equipment_Management_Admin_Menu::SLUG_ITEM_NEW, 'equipment_id' => $row->id ), admin_url( 'admin.php' ) ) ); ?>"><?php esc_html_e( '編集', 'equipment-management' ); ?></a>
+						</td>
 					</tr>
 				<?php endforeach; ?>
 			<?php endif; ?>

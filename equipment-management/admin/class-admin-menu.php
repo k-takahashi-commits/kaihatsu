@@ -16,6 +16,9 @@ class Equipment_Management_Admin_Menu {
 	const SLUG_DASHBOARD     = 'equipment-management';
 	const SLUG_ITEMS         = 'equipment-management-items';
 	const SLUG_ITEM_NEW      = 'equipment-management-item-new';
+	const SLUG_ITEM_DETAIL   = 'equipment-management-item-detail';
+	const SLUG_REPAIRS       = 'equipment-management-repairs';
+	const SLUG_REPAIR_NEW    = 'equipment-management-repair-new';
 	const SLUG_MASTERS       = 'equipment-management-masters';
 
 	/**
@@ -59,6 +62,33 @@ class Equipment_Management_Admin_Menu {
 			'equipment_edit_items',
 			self::SLUG_ITEM_NEW,
 			array( 'Equipment_Management_Equipment_Page', 'render_form' )
+		);
+
+		add_submenu_page(
+			null,
+			__( '機材詳細', 'equipment-management' ),
+			__( '機材詳細', 'equipment-management' ),
+			'equipment_view_items',
+			self::SLUG_ITEM_DETAIL,
+			array( 'Equipment_Management_Equipment_Page', 'render_detail' )
+		);
+
+		add_submenu_page(
+			self::SLUG_DASHBOARD,
+			__( '修理一覧', 'equipment-management' ),
+			__( '修理一覧', 'equipment-management' ),
+			'equipment_view_repairs',
+			self::SLUG_REPAIRS,
+			array( 'Equipment_Management_Repair_Page', 'render_list' )
+		);
+
+		add_submenu_page(
+			self::SLUG_DASHBOARD,
+			__( '修理起票', 'equipment-management' ),
+			__( '修理起票', 'equipment-management' ),
+			'equipment_edit_repairs',
+			self::SLUG_REPAIR_NEW,
+			array( 'Equipment_Management_Repair_Page', 'render_form' )
 		);
 
 		add_submenu_page(

@@ -60,6 +60,19 @@
 	margin-top: 12px;
 }
 
+.equipment-management-detail-table {
+	max-width: 960px;
+	margin: 12px 0 24px;
+}
+
+.equipment-management-detail-table th {
+	width: 180px;
+}
+
+.equipment-management-form select {
+	max-width: 100%;
+}
+
 @media (max-width: 960px) {
 	.equipment-management-master-grid {
 		grid-template-columns: 1fr;

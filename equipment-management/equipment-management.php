@@ -27,6 +27,7 @@ require_once EQUIPMENT_MANAGEMENT_DIR . 'includes/class-activator.php';
 require_once EQUIPMENT_MANAGEMENT_DIR . 'includes/class-deactivator.php';
 require_once EQUIPMENT_MANAGEMENT_DIR . 'admin/class-dashboard-page.php';
 require_once EQUIPMENT_MANAGEMENT_DIR . 'admin/class-equipment-page.php';
+require_once EQUIPMENT_MANAGEMENT_DIR . 'admin/class-repair-page.php';
 require_once EQUIPMENT_MANAGEMENT_DIR . 'admin/class-master-page.php';
 require_once EQUIPMENT_MANAGEMENT_DIR . 'admin/class-admin-menu.php';
 require_once EQUIPMENT_MANAGEMENT_DIR . 'includes/class-plugin.php';
