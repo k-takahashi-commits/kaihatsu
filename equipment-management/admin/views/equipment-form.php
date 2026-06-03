@@ -13,6 +13,14 @@ $is_edit = ! empty( $equipment );
 ?>
 
 <div class="wrap equipment-management">
+	<?php if ( 'attachment_error' === $attachment_notice ) : ?>
+		<div class="notice notice-error is-dismissible"><p><?php esc_html_e( '添付ファイルの保存に失敗しました。ファイル数は最大3件、1ファイル5MBまでです。', 'equipment-management' ); ?></p></div>
+	<?php elseif ( 'deleted' === $attachment_notice ) : ?>
+		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( '添付ファイルを削除しました。', 'equipment-management' ); ?></p></div>
+	<?php elseif ( 'error' === $attachment_notice ) : ?>
+		<div class="notice notice-error is-dismissible"><p><?php esc_html_e( '添付ファイルの削除に失敗しました。', 'equipment-management' ); ?></p></div>
+	<?php endif; ?>
+
 	<h1><?php echo $is_edit ? esc_html__( '機材編集', 'equipment-management' ) : esc_html__( '機材登録', 'equipment-management' ); ?></h1>
 
 	<?php if ( 'error' === $notice ) : ?>
@@ -23,7 +31,7 @@ $is_edit = ! empty( $equipment );
 		<div class="notice notice-warning"><p><?php esc_html_e( '登録には場所マスターと状態マスターが必要です。先にマスター管理で登録してください。', 'equipment-management' ); ?></p></div>
 	<?php endif; ?>
 
-	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="equipment-management-form">
+	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="equipment-management-form" enctype="multipart/form-data">
 		<input type="hidden" name="action" value="equipment_management_save_equipment">
 		<input type="hidden" name="equipment_id" value="<?php echo esc_attr( $is_edit ? $equipment->id : 0 ); ?>">
 		<?php wp_nonce_field( 'equipment_management_save_equipment' ); ?>
@@ -81,6 +89,20 @@ $is_edit = ! empty( $equipment );
 			<tr>
 				<th scope="row"><label for="equipment-note"><?php esc_html_e( '備考', 'equipment-management' ); ?></label></th>
 				<td><textarea name="note" id="equipment-note" class="large-text" rows="5"><?php echo esc_textarea( $is_edit ? $equipment->note : '' ); ?></textarea></td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="equipment-attachments"><?php esc_html_e( '添付ファイル', 'equipment-management' ); ?></label></th>
+				<td>
+					<input name="equipment_attachments[]" id="equipment-attachments" type="file" multiple>
+					<p class="description"><?php esc_html_e( '1ファイル5MBまで、1データにつき最大3件まで登録できます。', 'equipment-management' ); ?></p>
+					<?php if ( $is_edit ) : ?>
+						<?php
+						$attachment_redirect   = add_query_arg( array( 'page' => Equipment_Management_Admin_Menu::SLUG_ITEM_NEW, 'equipment_id' => $equipment->id ), admin_url( 'admin.php' ) );
+						$can_delete_attachment = true;
+						include equipment_management_path( 'admin/views/attachment-list.php' );
+						?>
+					<?php endif; ?>
+				</td>
 			</tr>
 		</table>
 

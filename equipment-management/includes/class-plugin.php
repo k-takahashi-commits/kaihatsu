@@ -26,6 +26,8 @@ class Equipment_Management_Plugin {
 		add_action( 'admin_post_equipment_management_export_equipment', array( 'Equipment_Management_Equipment_Page', 'handle_export' ) );
 		add_action( 'admin_post_equipment_management_save_repair', array( 'Equipment_Management_Repair_Page', 'handle_save' ) );
 		add_action( 'admin_post_equipment_management_export_repairs', array( 'Equipment_Management_Repair_Page', 'handle_export' ) );
+		add_action( 'admin_post_equipment_management_delete_attachment', array( 'Equipment_Management_Attachments', 'handle_delete' ) );
+		add_action( 'admin_init', array( $this, 'set_hidden_admin_page_title' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
 	}
 
@@ -50,6 +52,25 @@ class Equipment_Management_Plugin {
 	public function register_admin_menu() {
 		$menu = new Equipment_Management_Admin_Menu();
 		$menu->register();
+	}
+
+	/**
+	 * Sets titles for hidden admin pages before admin-header.php reads them.
+	 *
+	 * @return void
+	 */
+	public function set_hidden_admin_page_title() {
+		global $title;
+
+		$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+		$titles = array(
+			Equipment_Management_Admin_Menu::SLUG_ITEM_DETAIL   => __( '機材詳細', 'equipment-management' ),
+			Equipment_Management_Admin_Menu::SLUG_REPAIR_DETAIL => __( '修理詳細', 'equipment-management' ),
+		);
+
+		if ( isset( $titles[ $page ] ) ) {
+			$title = $titles[ $page ];
+		}
 	}
 
 	/**

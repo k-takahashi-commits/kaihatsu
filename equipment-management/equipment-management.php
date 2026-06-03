@@ -23,6 +23,7 @@ require_once EQUIPMENT_MANAGEMENT_DIR . 'includes/helpers.php';
 require_once EQUIPMENT_MANAGEMENT_DIR . 'includes/class-db.php';
 require_once EQUIPMENT_MANAGEMENT_DIR . 'includes/class-roles.php';
 require_once EQUIPMENT_MANAGEMENT_DIR . 'includes/class-permissions.php';
+require_once EQUIPMENT_MANAGEMENT_DIR . 'includes/class-attachments.php';
 require_once EQUIPMENT_MANAGEMENT_DIR . 'includes/class-activator.php';
 require_once EQUIPMENT_MANAGEMENT_DIR . 'includes/class-deactivator.php';
 require_once EQUIPMENT_MANAGEMENT_DIR . 'admin/class-dashboard-page.php';

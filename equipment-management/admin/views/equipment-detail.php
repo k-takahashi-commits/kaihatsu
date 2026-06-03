@@ -41,6 +41,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</tbody>
 		</table>
 
+		<h2><?php esc_html_e( '添付ファイル', 'equipment-management' ); ?></h2>
+		<?php
+		$attachment_redirect   = add_query_arg( array( 'page' => Equipment_Management_Admin_Menu::SLUG_ITEM_DETAIL, 'equipment_id' => $equipment->id ), admin_url( 'admin.php' ) );
+		$can_delete_attachment = false;
+		include equipment_management_path( 'admin/views/attachment-list.php' );
+		?>
+
 		<h2><?php esc_html_e( '修理履歴', 'equipment-management' ); ?></h2>
 		<table class="widefat striped equipment-management-table">
 			<thead>
@@ -72,7 +79,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<td><?php echo esc_html( $repair->repair_cost ); ?></td>
 							<td><?php echo esc_html( $repair->desired_completion_date ); ?></td>
 							<td><?php echo esc_html( $repair->completed_date ); ?></td>
-							<td><a href="<?php echo esc_url( add_query_arg( array( 'page' => Equipment_Management_Admin_Menu::SLUG_REPAIR_NEW, 'repair_id' => $repair->id ), admin_url( 'admin.php' ) ) ); ?>"><?php esc_html_e( '編集', 'equipment-management' ); ?></a></td>
+							<td>
+								<a href="<?php echo esc_url( add_query_arg( array( 'page' => Equipment_Management_Admin_Menu::SLUG_REPAIR_DETAIL, 'repair_id' => $repair->id ), admin_url( 'admin.php' ) ) ); ?>"><?php esc_html_e( '詳細', 'equipment-management' ); ?></a>
+								|
+								<a href="<?php echo esc_url( add_query_arg( array( 'page' => Equipment_Management_Admin_Menu::SLUG_REPAIR_NEW, 'repair_id' => $repair->id ), admin_url( 'admin.php' ) ) ); ?>"><?php esc_html_e( '編集', 'equipment-management' ); ?></a>
+							</td>
 						</tr>
 					<?php endforeach; ?>
 				<?php endif; ?>

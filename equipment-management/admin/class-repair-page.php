@@ -52,11 +52,14 @@ class Equipment_Management_Repair_Page {
 			self::redirect_form( $id, 'error' );
 		}
 
+		$attachment_notice = Equipment_Management_Attachments::handle_uploads( 'repair', $result, 'repair_attachments' ) ? '' : 'attachment_error';
+
 		wp_safe_redirect(
 			add_query_arg(
 				array(
 					'page'             => Equipment_Management_Admin_Menu::SLUG_REPAIRS,
 					'equipment_notice' => 'saved',
+					'attachment_notice' => $attachment_notice,
 				),
 				admin_url( 'admin.php' )
 			)
@@ -76,6 +79,7 @@ class Equipment_Management_Repair_Page {
 		$rows    = Equipment_Management_DB::get_repair_rows( $filters );
 		$masters = self::get_form_masters();
 		$notice  = isset( $_GET['equipment_notice'] ) ? sanitize_key( wp_unslash( $_GET['equipment_notice'] ) ) : '';
+		$attachment_notice = isset( $_GET['attachment_notice'] ) ? sanitize_key( wp_unslash( $_GET['attachment_notice'] ) ) : '';
 
 		include equipment_management_path( 'admin/views/repair-list.php' );
 	}
@@ -130,9 +134,26 @@ class Equipment_Management_Repair_Page {
 		$repair_id = isset( $_GET['repair_id'] ) ? absint( $_GET['repair_id'] ) : 0;
 		$repair    = Equipment_Management_DB::get_repair_row( $repair_id );
 		$masters   = self::get_form_masters();
+		$attachments = $repair ? Equipment_Management_Attachments::get_rows( 'repair', $repair->id ) : array();
 		$notice    = isset( $_GET['equipment_notice'] ) ? sanitize_key( wp_unslash( $_GET['equipment_notice'] ) ) : '';
+		$attachment_notice = isset( $_GET['attachment_notice'] ) ? sanitize_key( wp_unslash( $_GET['attachment_notice'] ) ) : '';
 
 		include equipment_management_path( 'admin/views/repair-form.php' );
+	}
+
+	/**
+	 * Renders the repair detail page.
+	 *
+	 * @return void
+	 */
+	public static function render_detail() {
+		Equipment_Management_Permissions::require_capability( 'equipment_view_repairs' );
+
+		$repair_id   = isset( $_GET['repair_id'] ) ? absint( $_GET['repair_id'] ) : 0;
+		$repair      = Equipment_Management_DB::get_repair_detail_row( $repair_id );
+		$attachments = $repair ? Equipment_Management_Attachments::get_rows( 'repair', $repair->id ) : array();
+
+		include equipment_management_path( 'admin/views/repair-detail.php' );
 	}
 
 	/**
@@ -213,10 +234,10 @@ class Equipment_Management_Repair_Page {
 		header( 'Content-Disposition: attachment; filename="' . sanitize_file_name( $filename ) . '"' );
 
 		$output = fopen( 'php://output', 'w' );
-		fputcsv( $output, array_map( array( __CLASS__, 'encode_csv_value' ), $headers ) );
+		fputcsv( $output, array_map( array( __CLASS__, 'encode_csv_value' ), $headers ), ',', '"', '' );
 
 		foreach ( $rows as $row ) {
-			fputcsv( $output, array_map( array( __CLASS__, 'encode_csv_value' ), $row ) );
+			fputcsv( $output, array_map( array( __CLASS__, 'encode_csv_value' ), $row ), ',', '"', '' );
 		}
 
 		fclose( $output );

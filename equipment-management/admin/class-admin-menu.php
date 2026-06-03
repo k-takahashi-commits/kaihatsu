@@ -19,6 +19,7 @@ class Equipment_Management_Admin_Menu {
 	const SLUG_ITEM_DETAIL   = 'equipment-management-item-detail';
 	const SLUG_REPAIRS       = 'equipment-management-repairs';
 	const SLUG_REPAIR_NEW    = 'equipment-management-repair-new';
+	const SLUG_REPAIR_DETAIL = 'equipment-management-repair-detail';
 	const SLUG_MASTERS       = 'equipment-management-masters';
 
 	/**
@@ -89,6 +90,15 @@ class Equipment_Management_Admin_Menu {
 			'equipment_edit_repairs',
 			self::SLUG_REPAIR_NEW,
 			array( 'Equipment_Management_Repair_Page', 'render_form' )
+		);
+
+		add_submenu_page(
+			null,
+			__( '修理詳細', 'equipment-management' ),
+			__( '修理詳細', 'equipment-management' ),
+			'equipment_view_repairs',
+			self::SLUG_REPAIR_DETAIL,
+			array( 'Equipment_Management_Repair_Page', 'render_detail' )
 		);
 
 		add_submenu_page(

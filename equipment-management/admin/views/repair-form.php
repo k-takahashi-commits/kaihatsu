@@ -15,6 +15,14 @@ $occurred_value      = $is_edit && ! empty( $repair->occurred_at ) ? str_replace
 ?>
 
 <div class="wrap equipment-management">
+	<?php if ( 'attachment_error' === $attachment_notice ) : ?>
+		<div class="notice notice-error is-dismissible"><p><?php esc_html_e( '添付ファイルの保存に失敗しました。ファイル数は最大3件、1ファイル5MBまでです。', 'equipment-management' ); ?></p></div>
+	<?php elseif ( 'deleted' === $attachment_notice ) : ?>
+		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( '添付ファイルを削除しました。', 'equipment-management' ); ?></p></div>
+	<?php elseif ( 'error' === $attachment_notice ) : ?>
+		<div class="notice notice-error is-dismissible"><p><?php esc_html_e( '添付ファイルの削除に失敗しました。', 'equipment-management' ); ?></p></div>
+	<?php endif; ?>
+
 	<h1><?php echo $is_edit ? esc_html__( '修理編集', 'equipment-management' ) : esc_html__( '修理起票', 'equipment-management' ); ?></h1>
 
 	<?php if ( 'error' === $notice ) : ?>
@@ -25,7 +33,7 @@ $occurred_value      = $is_edit && ! empty( $repair->occurred_at ) ? str_replace
 		<div class="notice notice-warning"><p><?php esc_html_e( '修理起票には機材、場所マスター、修理ステータスマスターが必要です。', 'equipment-management' ); ?></p></div>
 	<?php endif; ?>
 
-	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="equipment-management-form">
+	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="equipment-management-form" enctype="multipart/form-data">
 		<input type="hidden" name="action" value="equipment_management_save_repair">
 		<input type="hidden" name="repair_id" value="<?php echo esc_attr( $is_edit ? $repair->id : 0 ); ?>">
 		<input type="hidden" name="reporter_user_id" value="<?php echo esc_attr( $is_edit ? $repair->reporter_user_id : get_current_user_id() ); ?>">
@@ -47,7 +55,7 @@ $occurred_value      = $is_edit && ! empty( $repair->occurred_at ) ? str_replace
 								$equipment->equipment_code
 							);
 							?>
-							<option value="<?php echo esc_attr( $equipment->id ); ?>" <?php selected( $selected_equipment_id, $equipment->id ); ?>><?php echo esc_html( $label ); ?></option>
+							<option value="<?php echo esc_attr( $equipment->id ); ?>" data-location-id="<?php echo esc_attr( $equipment->location_id ); ?>" <?php selected( $selected_equipment_id, $equipment->id ); ?>><?php echo esc_html( $label ); ?></option>
 						<?php endforeach; ?>
 					</select>
 				</td>
@@ -129,6 +137,20 @@ $occurred_value      = $is_edit && ! empty( $repair->occurred_at ) ? str_replace
 			<tr>
 				<th scope="row"><label for="repair-note"><?php esc_html_e( '備考', 'equipment-management' ); ?></label></th>
 				<td><textarea name="note" id="repair-note" class="large-text" rows="4"><?php echo esc_textarea( $is_edit ? $repair->note : '' ); ?></textarea></td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="repair-attachments"><?php esc_html_e( '添付ファイル', 'equipment-management' ); ?></label></th>
+				<td>
+					<input name="repair_attachments[]" id="repair-attachments" type="file" multiple>
+					<p class="description"><?php esc_html_e( '1ファイル5MBまで、1データにつき最大3件まで登録できます。', 'equipment-management' ); ?></p>
+					<?php if ( $is_edit ) : ?>
+						<?php
+						$attachment_redirect   = add_query_arg( array( 'page' => Equipment_Management_Admin_Menu::SLUG_REPAIR_NEW, 'repair_id' => $repair->id ), admin_url( 'admin.php' ) );
+						$can_delete_attachment = true;
+						include equipment_management_path( 'admin/views/attachment-list.php' );
+						?>
+					<?php endif; ?>
+				</td>
 			</tr>
 		</table>
 

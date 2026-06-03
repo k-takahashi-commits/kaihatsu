@@ -37,6 +37,10 @@ $export_url = wp_nonce_url(
 		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( '機材を保存しました。', 'equipment-management' ); ?></p></div>
 	<?php endif; ?>
 
+	<?php if ( 'attachment_error' === $attachment_notice ) : ?>
+		<div class="notice notice-error is-dismissible"><p><?php esc_html_e( '添付ファイルの保存に失敗しました。ファイル数は最大3件、1ファイル5MBまでです。', 'equipment-management' ); ?></p></div>
+	<?php endif; ?>
+
 	<form method="get" class="equipment-management-search">
 		<input type="hidden" name="page" value="<?php echo esc_attr( Equipment_Management_Admin_Menu::SLUG_ITEMS ); ?>">
 		<div class="equipment-management-search-grid">

@@ -684,6 +684,53 @@ class Equipment_Management_DB {
 	}
 
 	/**
+	 * Returns one repair row with related names.
+	 *
+	 * @param int $id Repair ID.
+	 * @return object|null
+	 */
+	public static function get_repair_detail_row( $id ) {
+		global $wpdb;
+
+		$id = absint( $id );
+
+		if ( $id <= 0 ) {
+			return null;
+		}
+
+		$repairs         = self::table( 'repairs' );
+		$items           = self::table( 'items' );
+		$locations       = self::table( 'locations' );
+		$repair_statuses = self::table( 'repair_statuses' );
+		$vendors         = self::table( 'vendors' );
+
+		return $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT
+					r.*,
+					i.name AS equipment_name,
+					i.model_number,
+					i.equipment_code,
+					i.installed_date,
+					eq_l.name AS equipment_location_name,
+					tr_l.name AS trouble_location_name,
+					ret_l.name AS return_location_name,
+					rs.name AS status_name,
+					v.name AS vendor_name
+				FROM {$repairs} r
+				LEFT JOIN {$items} i ON i.id = r.equipment_id
+				LEFT JOIN {$locations} eq_l ON eq_l.id = i.location_id
+				LEFT JOIN {$locations} tr_l ON tr_l.id = r.trouble_location_id
+				LEFT JOIN {$locations} ret_l ON ret_l.id = r.return_location_id
+				LEFT JOIN {$repair_statuses} rs ON rs.id = r.status_id
+				LEFT JOIN {$vendors} v ON v.id = r.vendor_id
+				WHERE r.id = %d",
+				$id
+			)
+		);
+	}
+
+	/**
 	 * Inserts or updates a repair row.
 	 *
 	 * @param array<string, mixed> $data Repair data.

@@ -43,10 +43,13 @@ class Equipment_Management_Equipment_Page {
 			self::redirect_form( $id, 'error' );
 		}
 
+		$attachment_notice = Equipment_Management_Attachments::handle_uploads( 'equipment', $result, 'equipment_attachments' ) ? '' : 'attachment_error';
+
 		$url = add_query_arg(
 			array(
 				'page'             => Equipment_Management_Admin_Menu::SLUG_ITEMS,
 				'equipment_notice' => 'saved',
+				'attachment_notice' => $attachment_notice,
 			),
 			admin_url( 'admin.php' )
 		);
@@ -67,6 +70,7 @@ class Equipment_Management_Equipment_Page {
 		$rows    = Equipment_Management_DB::get_equipment_rows( $filters );
 		$masters = self::get_form_masters();
 		$notice  = isset( $_GET['equipment_notice'] ) ? sanitize_key( wp_unslash( $_GET['equipment_notice'] ) ) : '';
+		$attachment_notice = isset( $_GET['attachment_notice'] ) ? sanitize_key( wp_unslash( $_GET['attachment_notice'] ) ) : '';
 
 		include equipment_management_path( 'admin/views/equipment-list.php' );
 	}
@@ -120,7 +124,9 @@ class Equipment_Management_Equipment_Page {
 		$equipment_id = isset( $_GET['equipment_id'] ) ? absint( $_GET['equipment_id'] ) : 0;
 		$equipment    = Equipment_Management_DB::get_equipment_row( $equipment_id );
 		$masters      = self::get_form_masters();
+		$attachments  = $equipment ? Equipment_Management_Attachments::get_rows( 'equipment', $equipment->id ) : array();
 		$notice       = isset( $_GET['equipment_notice'] ) ? sanitize_key( wp_unslash( $_GET['equipment_notice'] ) ) : '';
+		$attachment_notice = isset( $_GET['attachment_notice'] ) ? sanitize_key( wp_unslash( $_GET['attachment_notice'] ) ) : '';
 
 		include equipment_management_path( 'admin/views/equipment-form.php' );
 	}
@@ -136,6 +142,7 @@ class Equipment_Management_Equipment_Page {
 		$equipment_id = isset( $_GET['equipment_id'] ) ? absint( $_GET['equipment_id'] ) : 0;
 		$equipment    = Equipment_Management_DB::get_equipment_detail_row( $equipment_id );
 		$repairs      = $equipment ? Equipment_Management_DB::get_repair_rows( array( 'equipment_id' => $equipment->id ), 0 ) : array();
+		$attachments  = $equipment ? Equipment_Management_Attachments::get_rows( 'equipment', $equipment->id ) : array();
 
 		include equipment_management_path( 'admin/views/equipment-detail.php' );
 	}
@@ -208,10 +215,10 @@ class Equipment_Management_Equipment_Page {
 		header( 'Content-Disposition: attachment; filename="' . sanitize_file_name( $filename ) . '"' );
 
 		$output = fopen( 'php://output', 'w' );
-		fputcsv( $output, array_map( array( __CLASS__, 'encode_csv_value' ), $headers ) );
+		fputcsv( $output, array_map( array( __CLASS__, 'encode_csv_value' ), $headers ), ',', '"', '' );
 
 		foreach ( $rows as $row ) {
-			fputcsv( $output, array_map( array( __CLASS__, 'encode_csv_value' ), $row ) );
+			fputcsv( $output, array_map( array( __CLASS__, 'encode_csv_value' ), $row ), ',', '"', '' );
 		}
 
 		fclose( $output );

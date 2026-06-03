@@ -33,6 +33,10 @@ $export_url = wp_nonce_url(
 		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( '修理情報を保存しました。', 'equipment-management' ); ?></p></div>
 	<?php endif; ?>
 
+	<?php if ( 'attachment_error' === $attachment_notice ) : ?>
+		<div class="notice notice-error is-dismissible"><p><?php esc_html_e( '添付ファイルの保存に失敗しました。ファイル数は最大3件、1ファイル5MBまでです。', 'equipment-management' ); ?></p></div>
+	<?php endif; ?>
+
 	<form method="get" class="equipment-management-search">
 		<input type="hidden" name="page" value="<?php echo esc_attr( Equipment_Management_Admin_Menu::SLUG_REPAIRS ); ?>">
 		<div class="equipment-management-search-grid">
@@ -108,7 +112,11 @@ $export_url = wp_nonce_url(
 						<td><?php echo esc_html( $row->assignee_name ); ?></td>
 						<td><?php echo esc_html( $row->desired_completion_date ); ?></td>
 						<td><?php echo esc_html( $row->repair_cost ); ?></td>
-						<td><a href="<?php echo esc_url( add_query_arg( array( 'page' => Equipment_Management_Admin_Menu::SLUG_REPAIR_NEW, 'repair_id' => $row->id ), admin_url( 'admin.php' ) ) ); ?>"><?php esc_html_e( '編集', 'equipment-management' ); ?></a></td>
+						<td>
+							<a href="<?php echo esc_url( add_query_arg( array( 'page' => Equipment_Management_Admin_Menu::SLUG_REPAIR_DETAIL, 'repair_id' => $row->id ), admin_url( 'admin.php' ) ) ); ?>"><?php esc_html_e( '詳細', 'equipment-management' ); ?></a>
+							|
+							<a href="<?php echo esc_url( add_query_arg( array( 'page' => Equipment_Management_Admin_Menu::SLUG_REPAIR_NEW, 'repair_id' => $row->id ), admin_url( 'admin.php' ) ) ); ?>"><?php esc_html_e( '編集', 'equipment-management' ); ?></a>
+						</td>
 					</tr>
 				<?php endforeach; ?>
 			<?php endif; ?>
